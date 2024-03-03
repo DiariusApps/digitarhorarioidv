@@ -10,11 +10,13 @@ try:
     chdata = os.environ['chdata']
     colecz = os.environ['colecz']
     project_id = os.environ['project_id']
+    school = os.environ['id_school']
 except:
     cred = st.secrets["cred_service_name"]
     chdata = st.secrets["chdata"]
     colecz = st.secrets["colecz"]
     project_id = st.secrets["project_id"]
+    school = st.secrets["id_school"]
 
 client = pymongo.MongoClient(cred)
 db = client[chdata]
@@ -38,7 +40,9 @@ def principal():
         # username = st.text_input("Nome de Usuário")
         # vínculo = st.text_input("Vínculo")
         # req = freeze_classes(project_id, vínculo, username)
-        req = freeze_classes('projeto03', 'estadualbahia@ue_cetibc', '114507413')
+        username = project_id.split('__')[0]
+        project_name = project_id.split('__')[1]
+        req = freeze_classes(project_name, school, username)
         json = req[-1]
         pro = req[-2]
         st.session_state.json = json
@@ -52,8 +56,8 @@ def principal():
     json = st.session_state.json
     ch_individuais = st.session_state.ch_individuais
     turmas =  {subkey:json[key][subkey] for key in json for subkey in json[key]}
-    matrículas = [item['matricula'] for item in st.session_state.lprofs]
-    dict_matrícula_apelido = {item['matricula']:item['apelido'] for item in st.session_state.lprofs}
+    matrículas = [item['matricula'] for item in st.session_state.lprofs if item['matricula'] in ch_individuais.keys()]
+    dict_matrícula_apelido = {item['matricula']:item['apelido'] for item in st.session_state.lprofs if item['matricula'] in ch_individuais.keys()}
     assert len(matrículas) == len(dict_matrícula_apelido)
     prof_choose = st.selectbox("Selecione o professor", list(dict_matrícula_apelido.values()))
     my_matrícula = {v:k for k,v in dict_matrícula_apelido.items()}[prof_choose]
