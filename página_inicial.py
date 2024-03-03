@@ -76,8 +76,7 @@ def principal():
         for turma, list_de_aula in ch_turno.items():
             for aula in list_de_aula:
                 my_plans.append(
-                    f"{
-                        st.session_state.alias.get(turma, turma)} § {to_replacement_of_columns.get(aula, aula)}"
+                    f"{st.session_state.alias.get(turma, turma)} § {to_replacement_of_columns.get(aula, aula)}"
                 )
     no_repeat = ['-'] + list(set(my_plans))
     column_config={
