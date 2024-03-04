@@ -18,11 +18,11 @@ day_extenso = {
 def pandas_to_xlsx(df, day):
     wb = load_workbook(filename='hora.xlsx')
     sheet_ranges = wb['hora']
-    sheet_ranges['A1'] = f'{day_extenso[day]}'.replace('1', '1°').replace('2', '2°').replace('3', '3°')
+    sheet_ranges['A1'] = f'{day_extenso[day]}'
     for j, row in enumerate(df.iterrows()):
         valores = row[1].tolist()
         index = row[0]
-        sheet_ranges[f'A{j+3}'] = index
+        sheet_ranges[f'A{j+3}'] = index.replace('1', '1°').replace('2', '2°').replace('3', '3°')
         for i, valor in enumerate(valores):
             sheet_ranges[f'{chr(65+i+1)}{j+3}'] = valor
     # save as stream
