@@ -84,6 +84,10 @@ def principal():
                 if comp.startswith('ES '):
                     comp = comp[3:]
                 new_comp = comp.replace(' - VPE: ', '_')
+                if df.at[turmaz, hora] != '-':
+
+                    st.warning(f"O professor {dict_matrícula_apelido.get(my_matrícula, my_matrícula)} está com aula duplicada")
+                    st.warning(f' ou o professor {df.at[turmaz, hora]} está com aula duplicada')
                 df.at[turmaz, hora] = f"{dict_matrícula_apelido.get(my_matrícula, my_matrícula).replace('Dudu', 'Nival')}   {new_comp}"
             except ValueError:
                 continue

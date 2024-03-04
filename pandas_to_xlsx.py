@@ -6,7 +6,7 @@ day_extenso = {
     'SEG': 'SEGUNDA-FEIRA',
     'TER': 'TERÇA-FEIRA',
     'QUA': 'QUARTA-FEIRA',
-    'QUI': 'QUINTA-FEIAR',
+    'QUI': 'QUINTA-FEIRA',
     'SEX': 'SEXTA-FEIRA',
     'SAB': 'SÁBADO',
     'DOM': 'DOMINGO'
