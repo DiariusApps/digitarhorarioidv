@@ -115,6 +115,7 @@ def principal():
         # if valor[0] in copy_of_my_plans:
         #     copy_of_my_plans.remove(valor[0])
     st.write(f"PLANEJAMENTOS RESTANTES **{len(copy_of_my_plans)}** ")
+    st.json(copy_of_my_plans)
     if st.button("Salvar"):
         dict_from_df = df2.to_dict()
 
