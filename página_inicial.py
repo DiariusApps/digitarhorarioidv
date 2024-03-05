@@ -60,7 +60,7 @@ def principal():
     matrículas = [item['matricula'] for item in st.session_state.lprofs if item['matricula'] in ch_individuais.keys()]
     dict_matrícula_apelido = {item['matricula']:item['apelido'] for item in st.session_state.lprofs if item['matricula'] in ch_individuais.keys()}
     assert len(matrículas) == len(dict_matrícula_apelido)
-    prof_choose = st.selectbox("Selecione o professor", list(dict_matrícula_apelido.values()))
+    prof_choose = st.selectbox("Selecione o professor", sorted(list(dict_matrícula_apelido.values())))
     my_matrícula = {v:k for k,v in dict_matrícula_apelido.items()}[prof_choose]
     turnos = ['DIURNO', 'NOTURNO']
     turno_choice = st.selectbox("Selecione o turno", turnos, on_change=on_change, args=(my_matrícula,))

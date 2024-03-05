@@ -97,7 +97,7 @@ def principal():
     # st download
     st.download_button(
         label="Baixar planilha", 
-        data=pandas_to_xlsx(df, selected_day), 
+        data=pandas_to_xlsx(df, selected_day, turno=turno_choice), 
         file_name=f'{selected_day}.xlsx',
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 

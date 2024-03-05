@@ -15,8 +15,11 @@ day_extenso = {
 
 
 
-def pandas_to_xlsx(df, day):
-    wb = load_workbook(filename='hora.xlsx')
+def pandas_to_xlsx(df, day, turno='DIURNO'):
+    if turno == 'DIURNO':
+        wb = load_workbook(filename='hora.xlsx')
+    else:
+        wb = load_workbook(filename='noturno.xlsx')
     sheet_ranges = wb['hora']
     sheet_ranges['A1'] = f'{day_extenso[day]}'
     for j, row in enumerate(df.iterrows()):
