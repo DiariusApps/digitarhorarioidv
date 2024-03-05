@@ -134,6 +134,7 @@ def principal():
             upsert=True
         )
         del st.session_state[my_matrícula]
+        del st.session_state.json
         st.rerun()
     
 
