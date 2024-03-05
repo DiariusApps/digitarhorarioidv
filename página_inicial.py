@@ -78,7 +78,11 @@ def principal():
                 my_plans.append(
                     f"{st.session_state.alias.get(turma, turma)} § {to_replacement_of_columns.get(aula, aula)}"
                 )
-    no_repeat = ['-'] + list(set(my_plans))
+    no_repeat = ['-'] + sorted(list(set(my_plans)))
+    if turno_choice == 'DIURNO':
+        horas = ['1°H', '2°H', '3°H', '4°H', '5°H', '6°H', '7°H']
+    else:
+        horas = ['1°H', '2°H', '3°H', '4°H', '5°H']
     column_config={
         HORA: st.column_config.SelectboxColumn(
             HORA,
@@ -87,7 +91,7 @@ def principal():
             required=True,
             default="-"
         )
-        for HORA in ['1°H', '2°H', '3°H', '4°H', '5°H', '6°H', '7°H']
+        for HORA in horas
     }
     if my_matrícula not in st.session_state:
         try:
@@ -99,7 +103,7 @@ def principal():
             st.session_state[my_matrícula] = pd.DataFrame(dados['schedule'])
             st.success("possui registro no banco de dados")
         except:
-            st.session_state[my_matrícula] = pd.DataFrame([['-' for _ in range(7)] for __ in range(5)], index=['SEG', 'TER', 'QUA', 'QUI', 'SEX'], columns=['1°H', '2°H', '3°H', '4°H', '5°H', '6°H', '7°H'])
+            st.session_state[my_matrícula] = pd.DataFrame([['-' for _ in horas] for __ in range(5)], index=['SEG', 'TER', 'QUA', 'QUI', 'SEX'], columns=horas)
     df = st.session_state[my_matrícula]
     df2 = st.data_editor(
         df,
