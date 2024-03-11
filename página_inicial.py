@@ -23,10 +23,9 @@ client = pymongo.MongoClient(cred)
 db = client[chdata]
 collection = db[colecz]
 # make a request to the server to freeze the classes
-def freeze_classes(project_id, vinculo, username):
-    url = f"https://che.herokuapp.com/freezech?project_id={project_id}&v%C3%ADnculo={vinculo}&username={username}"
-    response = httpx.get(url, timeout=10)
-    return response.json()
+def freeze_classes():
+    from data import from_ch_maker
+    return from_ch_maker
 
 def on_change(matrícula):
     if matrícula in st.session_state:
@@ -43,7 +42,7 @@ def principal():
         # req = freeze_classes(project_id, vínculo, username)
         username = project_id.split('__')[0]
         project_name = project_id.split('__')[1]
-        req = freeze_classes(project_name, school, username)
+        req = freeze_classes()
         json = req[-1]
         pro = req[-2]
         st.session_state.json = json

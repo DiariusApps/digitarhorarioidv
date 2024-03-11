@@ -60,12 +60,11 @@ def principal():
     }
     turmas =  {subkey:json[key][subkey] for key in json for subkey in json[key] if key in dict_turno[turno_choice]}
     turmas_do_turno = turmas.keys()
-    selected_day = st.selectbox("Selecione o dia da semana", ['SEG', 'TER', 'QUA', 'QUI', 'SEX'])
-    df_data = [['-' for _ in range(7)] for __ in turmas_do_turno]
-    df = pd.DataFrame(df_data, index=turmas_do_turno, columns=['1°H', '2°H', '3°H', '4°H', '5°H', '6°H', '7°H'])
-    df.index = [st.session_state.alias.get(turma, turma) for turma in df.index]
+    selected_turma = st.selectbox("Selecione o dia da semana", turmas_do_turno)
+    df_data = [['-' for _ in ['SEG', 'TER', 'QUA', 'QUI', 'SEX']] for __ in ['1°H', '2°H', '3°H', '4°H', '5°H', '6°H', '7°H']]
+    df = pd.DataFrame(df_data, index=['1°H', '2°H', '3°H', '4°H', '5°H', '6°H', '7°H'], columns=['SEG', 'TER', 'QUA', 'QUI', 'SEX'])
+
     for my_matrícula, my_ch in ch_individuais.items():
-        my_plans = []
         try:
             dados = collection.find_one({
                     'matrícula': my_matrícula,
@@ -74,30 +73,36 @@ def principal():
             )
             data_frame = pd.DataFrame(dados['schedule'])
         except:
-            st.info(dict_matrícula_apelido.get(my_matrícula, my_matrícula))
             continue
-        no_dia = data_frame.T[selected_day]
-        for hora, aula in no_dia.items():
-            try: 
-                turmaz, comp = aula.split(' § ')
-                if comp.startswith('ES '):
-                    comp = comp[3:]
-                new_comp = comp.replace(' - VPE: ', '_')
-                if df.at[turmaz, hora] != '-':
+        for selected_day in ['SEG', 'TER', 'QUA', 'QUI', 'QUI', 'SEX']:
+            no_dia = data_frame.T[selected_day]
+            for hora, aula in no_dia.items():
+                try: 
+                    turmaz, comp = aula.split(' § ')
+                    if turmaz != st.session_state.alias.get(selected_turma, turmaz):
+                        continue
+                    if comp.startswith('ES '):
+                        comp = comp[3:]
+                    new_comp = comp.replace(' - VPE: ', '_')
+                    df.at[hora, selected_day] = f"{dict_matrícula_apelido.get(my_matrícula, my_matrícula).replace('Dudu', 'Nival').upper()}       {new_comp}"
+                except ValueError:
+                    continue
+    # find row with all values equal to '-'
+    mask = df.eq('-').all(axis=1)
+    # drop row
+    df = df[~mask]
 
-                    st.warning(f"O professor {dict_matrícula_apelido.get(my_matrícula, my_matrícula)} está com aula duplicada")
-                    st.warning(f' ou o professor {df.at[turmaz, hora]} está com aula duplicada')
-                df.at[turmaz, hora] = f"{dict_matrícula_apelido.get(my_matrícula, my_matrícula).replace('Dudu', 'Nival')}   {new_comp}"
-            except ValueError:
-                continue
-
-    st.dataframe(df)
-    from pandas_to_xlsx import pandas_to_xlsx
-    # st download
+    st.table(df)
+    if df.shape[0] == 5:
+        from pandas_to_xlsx import by_class_5h as by_class
+    else:
+        from pandas_to_xlsx import by_class
+    turma_nome_parte1 = st.session_state.alias.get(selected_turma, selected_turma).replace('1', '1°').replace('2', '2°').replace('3', '3°')
+    turma_nome_parte2 = selected_turma
     st.download_button(
         label="Baixar planilha", 
-        data=pandas_to_xlsx(df, selected_day, turno=turno_choice), 
-        file_name=f'{selected_day}.xlsx',
+        data=by_class(df.T, turma=f'{turma_nome_parte1} ({turma_nome_parte2})'), 
+        file_name=f'{selected_turma}.xlsx',
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
     

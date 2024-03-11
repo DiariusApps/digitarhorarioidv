@@ -49,3 +49,4 @@ to_replace = [
 
 
 to_replacement_of_columns = {key: value for key, value in zip(original, to_replace)}
+reversed_dic_comps = {value: key for key, value in to_replacement_of_columns.items()}
